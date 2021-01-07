@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  web:
+    build: "./laravel-app"
+    ports:
+      - "80:80"
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - /opt/interview-task/laravel-app:/var/www/html/
+
+  nodejs:
+    build: "./nodejs"
+    depends_on:
+      - redis
+      - db
+    restart: always
+    volumes:
+      - /opt/interview-task/nodejs:/usr/src/app
+    links:
+      - "db:database"
+  db:
+    container_name: "db"
+    image: "mysql"
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=testt
+      - MYSQL_ALLOW_EMPTY_PASSWORD=Y
+  redis: 
+    image: "redis:alpine"
+
+
